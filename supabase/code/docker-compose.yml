@@ -154,6 +154,11 @@ services:
       GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_EXP: ${JWT_EXPIRY}
 
+      # Encerra a sessao apos esse tempo SEM uso (o relogio zera a cada request).
+      # Sem isso o refresh token rola indefinidamente e a sessao nunca expira.
+      # Alinhado ao maxAge do cookie active_org no painel (apps/web).
+      GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: 4h
+
       # Legacy symmetric HS256 key
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
 
@@ -458,6 +463,11 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+      # O Logflare roda as proprias migrations ao subir; depois de um Recreate do db
+      # isso passa dos 50s de retries e o deploy aborta em "analytics is unhealthy",
+      # mesmo com o servico ficando saudavel sozinho logo depois. Durante o
+      # start_period as falhas nao contam, e um sucesso encerra a janela na hora.
+      start_period: 120s
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
