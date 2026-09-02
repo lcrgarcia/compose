@@ -463,6 +463,11 @@ services:
       timeout: 5s
       interval: 5s
       retries: 10
+      # O Logflare roda as proprias migrations ao subir; depois de um Recreate do db
+      # isso passa dos 50s de retries e o deploy aborta em "analytics is unhealthy",
+      # mesmo com o servico ficando saudavel sozinho logo depois. Durante o
+      # start_period as falhas nao contam, e um sucesso encerra a janela na hora.
+      start_period: 120s
     depends_on:
       db:
         # Disable this if you are using an external Postgres database
