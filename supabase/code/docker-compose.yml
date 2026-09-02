@@ -154,6 +154,11 @@ services:
       GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_EXP: ${JWT_EXPIRY}
 
+      # Encerra a sessao apos esse tempo SEM uso (o relogio zera a cada request).
+      # Sem isso o refresh token rola indefinidamente e a sessao nunca expira.
+      # Alinhado ao maxAge do cookie active_org no painel (apps/web).
+      GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: 4h
+
       # Legacy symmetric HS256 key
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
 
